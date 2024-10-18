@@ -1,6 +1,19 @@
 import reflex as rx
 
-
+class SizeNumberState(rx.State):
+    size: float = 4.5
+    size_str: str = f'{size}vh'
+    max_size: float = 11.0
+    min_size: float = 2.0
+    
+    def increase_size(self):
+        self.size = min(self.size + 0.5, self.max_size)
+        self.size_str = f'{self.size}vh'
+    
+    def decrease_size(self):
+        self.size = max(self.size - 0.5, self.min_size)
+        self.size_str = f'{self.size}vh'
+        
 
 class CalculatorState(rx.State):
     display: str = "0"
@@ -79,7 +92,7 @@ class CalculatorState(rx.State):
 
 def index():
     button_number_style = {
-        "font_size": "4.5vh",  # Tamaño de fuente relativo a la altura del viewport
+        "font_size": SizeNumberState.size_str,  # Tamaño de fuente relativo a la altura del viewport
         "height": "100%",  # Equivalente a 60px si el tamaño de fuente raíz es 16px
         "bg": "#718096",
         "color": "#FFFFFF",
@@ -87,12 +100,20 @@ def index():
         "_active": {"bg": "#1A202C"},  # Color aún más oscuro al hacer clic
     }
     button_operator_style = {
-        "font_size": "4.5vh",  # Tamaño de fuente relativo a la altura del viewport
+        "font_size": SizeNumberState.size_str,  # Tamaño de fuente relativo a la altura del viewport
         "height": "100%",  # Equivalente a 60px si el tamaño de fuente raíz es 16px
         "bg": "#A0AEC0",
         "color": "#FFFFFF",
         "_hover": {"bg": "#2D3748"},  # Color más oscuro al pasar el mouse
         "_active": {"bg": "#1A202C"},  # Color aún más oscuro al hacer clic
+    }
+    button_charsize_style = {
+        "font_size": "2vh",
+        "height": "100%",
+        "bg": "#A0AEC0",
+        "color": "#FFFFFF",
+        "_hover": {"bg": "#2D3748"},
+        "_active": {"bg": "#1A202C"},
     }
     
     return rx.vstack(
@@ -146,6 +167,32 @@ def index():
                 height='30rem',
                 
             ),
+            rx.hstack(
+                rx.box(
+                    rx.hstack(
+                        rx.button("-", **button_charsize_style, on_click=SizeNumberState.decrease_size),
+                        rx.text(f"Size: {SizeNumberState.size_str}", size="4", font_size="2vh", height="100%"),
+                        rx.button("+", **button_charsize_style, on_click=SizeNumberState.increase_size),
+                        
+                        align_items="center",
+                        justify_content="center",
+                        spacing="1rem",
+                    ),
+                    # border="2px solid #A0AEC0",
+                    padding="0.75rem",
+                    # border_radius="0.5rem",
+                    width="100%",
+                    text_align="center",
+                    font_family="monospace",
+                    display="flex",
+                    justify_content="center",
+                    align_items="center",
+                ),
+                width='100%',
+                justify_content="center",
+                height='100%'
+            ),
+            
             width='100%',
             margin='2rem'
         ),
