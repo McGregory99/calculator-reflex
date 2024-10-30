@@ -1,5 +1,9 @@
 import reflex as rx
 
+from .ui.base import base_page
+from . import pages
+
+
 class SizeNumberState(rx.State):
     size: float = 4.5
     size_str: str = f'{size}vh'
@@ -89,8 +93,15 @@ class CalculatorState(rx.State):
         if value.is_integer():
             return str(int(value))
         return f"{value:.10f}".rstrip('0').rstrip('.')
-
+    
 def index():
+    return base_page(
+        rx.vstack(
+            rx.text("Hola mundo")
+        )
+    )
+
+def __index():
     button_number_style = {
         "font_size": SizeNumberState.size_str,  # Tamaño de fuente relativo a la altura del viewport
         "height": "100%",  # Equivalente a 60px si el tamaño de fuente raíz es 16px
@@ -116,8 +127,7 @@ def index():
         "_active": {"bg": "#1A202C"},
     }
     
-    return rx.vstack(
-        rx.heading("Calculadora sencillita", size="9"),
+    return base_page(
         rx.vstack(
             rx.hstack(
                 rx.box(
@@ -193,15 +203,17 @@ def index():
                 height='100%'
             ),
             
-            width='100%',
+            width='50%',
             margin='2rem'
         ),
         
         
         
         
-        width='50%',
+        width='100%',
     )
 
 app = rx.App()
 app.add_page(index)
+app.add_page(pages.about_page, route="/about")
+app.add_page(pages.pricing_page, route="/pricing")
