@@ -1,7 +1,7 @@
 import reflex as rx
 
 from .ui.base import base_page
-from . import pages
+from . import pages, navigation
 
 
 class SizeNumberState(rx.State):
@@ -17,7 +17,6 @@ class SizeNumberState(rx.State):
     def decrease_size(self):
         self.size = max(self.size - 0.5, self.min_size)
         self.size_str = f'{self.size}vh'
-        
 
 class CalculatorState(rx.State):
     display: str = "0"
@@ -94,12 +93,29 @@ class CalculatorState(rx.State):
             return str(int(value))
         return f"{value:.10f}".rstrip('0').rstrip('.')
     
+    
+    
 def index():
-    return base_page(
-        rx.vstack(
-            rx.text("Hola mundo")
+    my_child = rx.vstack(
+            rx.link(
+                rx.button(
+                    rx.text("About"),
+                ),
+                href=navigation.routes.ABOUT_US_ROUTE
+            ),
+            rx.link(
+                rx.button(
+                    rx.text("Pricing"),
+                ),
+                href=navigation.routes.PRICING_US_ROUTE
+            ),
+            rx.button('Contact us', ),
+            align_items="center",
+            spacing="2rem", 
+            # width="100%",
         )
-    )
+    
+    return base_page(my_child)
 
 def __index():
     button_number_style = {
@@ -215,5 +231,15 @@ def __index():
 
 app = rx.App()
 app.add_page(index)
-app.add_page(pages.about_page, route="/about")
-app.add_page(pages.pricing_page, route="/pricing")
+app.add_page(
+    pages.about_page, 
+    route=navigation.routes.ABOUT_US_ROUTE
+)
+app.add_page(
+    pages.pricing_page, 
+    route=navigation.routes.PRICING_US_ROUTE
+)
+# app.add_page(
+#     pages.contact_page, 
+#     route=navigation.routes.CONTACT_ROUTE
+# )
